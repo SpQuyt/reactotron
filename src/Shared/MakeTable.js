@@ -20,7 +20,6 @@ const Styles = {
     paddingRight: 10,
     wordBreak: 'break-all',
     textAlign: 'left',
-    color: Colors.foregroundDark,
     WebkitUserSelect: 'text',
     cursor: 'text'
   },

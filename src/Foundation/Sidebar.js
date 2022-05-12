@@ -5,6 +5,10 @@ import SidebarButton from "./SidebarButton"
 import { inject, observer } from "mobx-react"
 import { MdReorder, MdAssignment, MdPhoneIphone, MdLiveHelp } from "react-icons/md"
 import { FaMagic } from "react-icons/fa"
+import ColorsLight from "../Theme/ColorsLight"
+import AppStylesLight from "../Theme/AppStylesLight"
+import { ModeType } from "../constants.js"
+import appSettingsStore from "../Stores/AppSettingsStore.js"
 
 const logoUrl = require("../Theme/Reactotron-128.png")
 
@@ -12,13 +16,27 @@ const Styles = {
   container: {
     zIndex: 5,
     maxWidth: 115,
-    backgroundColor: Colors.backgroundSubtleDark,
     // boxShadow: `0px 0px 30px ${Colors.glow}`,
-    borderRight: `1px solid ${Colors.chromeLine}`,
+    borderRight: `1px solid ${Colors.backgroundSubtleDark}`,
     WebkitAppRegion: "drag",
     transition: "margin 0.2s ease-out",
   },
   content: { ...AppStyles.Layout.vbox, height: "100%", alignItems: "center" },
+  tabs: { paddingTop: 20 },
+  spacer: { flex: 1 },
+  logo: { width: 32, height: 32, paddingBottom: 4 },
+}
+
+const StylesLightMode = {
+  container: {
+    zIndex: 5,
+    maxWidth: 115,
+    // boxShadow: `0px 0px 30px ${ColorsLight.glow}`,
+    borderRight: `1px solid ${ColorsLight.backgroundSubtleDark}`,
+    WebkitAppRegion: "drag",
+    transition: "margin 0.2s ease-out",
+  },
+  content: { ...AppStylesLight.Layout.vbox, height: "100%", alignItems: "center" },
   tabs: { paddingTop: 20 },
   spacer: { flex: 1 },
   logo: { width: 32, height: 32, paddingBottom: 4 },
@@ -56,23 +74,31 @@ class Sidebar extends Component {
     const imageFilter = {
       filter: `grayscale(${isHome ? 0 : 100}%) brightness(${isHome ? 100 : 70}%)`,
     }
+    const currentStyle = appSettingsStore.mode === ModeType.LIGHT ? StylesLightMode : Styles;
 
     return (
       <div
         style={{
-          ...Styles.container,
-          ...(!ui.isSidebarVisible ? { marginLeft: -Styles.container.maxWidth } : {}),
+          ...currentStyle.container,
+          ...(!ui.isSidebarVisible ? { marginLeft: -currentStyle.container.maxWidth } : {}),
         }}
       >
-        <div style={Styles.content}>
-          <div style={Styles.tabs}>
+        <div style={currentStyle.content}>
+          <div style={currentStyle.tabs}>
+            <button
+              style={{ width: '100%', marginTop: 10, backgroundColor: 'white', height: 50, color: 'black' }}
+              onClick={() => {
+                appSettingsStore.updateMode(appSettingsStore.mode === ModeType.LIGHT ? ModeType.DARK : ModeType.LIGHT);
+              }} >
+              Toggle dark-mode/light-mode
+            </button>
             <SidebarButton
               text="Home"
               hideTopBorder
               isActive={isHome}
               onClick={this.handleClickHome}
             >
-              <img src={logoUrl} style={{ ...Styles.logo, ...imageFilter }} />
+              <img src={logoUrl} style={{ ...currentStyle.logo, ...imageFilter }} />
             </SidebarButton>
             <SidebarButton
               text="Timeline"
@@ -100,7 +126,7 @@ class Sidebar extends Component {
               onClick={this.handleClickCustomCommands}
             />
           </div>
-          <div style={Styles.spacer} />
+          <div style={currentStyle.spacer} />
           <div>
             <SidebarButton
               text="Help"

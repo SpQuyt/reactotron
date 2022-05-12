@@ -71,7 +71,8 @@
     "react-tooltip": "3.10.0",
     "reactotron-core-server": "3.0.2",
     "source-map-support": "0.5.13",
-    "stringify-object": "3.3.0"
+    "stringify-object": "3.3.0",
+    "styled-components": "^5.3.5"
   },
   "devDependencies": {
     "@babel/core": "7.5.5",

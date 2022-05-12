@@ -1,7 +1,5 @@
 import Color from "color"
-import { observer } from "mobx-react"
 import { createStyling } from "react-base16-styling"
-import appSettingsStore from "../Stores/AppSettingsStore.js"
 
 // https://github.com/chriskempson/base16/blob/master/styling.md
 
@@ -76,13 +74,13 @@ const getStylingFromBase16 = base16Theme => {
 
 // the default theme until i figure out how to customize it on the fly
 // http://chriskempson.github.io/base16/
-// const defaultTheme = 'atliersavanah'
-// const defaultTheme = 'ocean'
-// const defaultTheme = 'mocha'
-const defaultTheme = 'railscasts'
-// const defaultTheme = 'greenscreen'
-// const defaultTheme = "twilight"
-// const defaultTheme = 'default'
+// const defaultTheme = 'atliersavanah:inverted'
+// const defaultTheme = 'ocean:inverted'
+// const defaultTheme = 'mocha:inverted'
+const defaultTheme = 'railscasts:inverted'
+// const defaultTheme = 'greenscreen:inverted'
+// const defaultTheme = "twilight:inverted"
+// const defaultTheme = 'default:inverted'
 
 // the natural or inverted look
 const invertTheme = true

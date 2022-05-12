@@ -21,6 +21,10 @@ import Sidebar from "./Sidebar"
 import StatusBar from "./StatusBar"
 import CustomCommandsList from "../CustomCommands/CustomCommandsList"
 import ReactotronTerminal from "./ReactotronTerminal"
+import ColorsLight from "../Theme/ColorsLight"
+import AppStylesLight from "../Theme/AppStylesLight"
+import appSettingsStore from "../Stores/AppSettingsStore.js"
+import { ModeType } from "../constants.js"
 
 const session = new SessionStore(config.get("server.port", 9090))
 
@@ -36,6 +40,21 @@ const Styles = {
   body: { ...AppStyles.Layout.hbox },
   app: { ...AppStyles.Layout.vbox, scroll: "none", overflow: "hidden" },
   page: { ...AppStyles.Layout.vbox, flex: 1 },
+  pageHidden: { flex: 0, height: 0, visibility: "hidden" },
+}
+
+const StylesLightMode = {
+  container: { ...AppStylesLight.Layout.vbox },
+  content: {
+    ...AppStylesLight.Layout.vbox,
+    backgroundColor: ColorsLight.background,
+    color: ColorsLight.foreground,
+    height: "100vh",
+    scroll: "hidden",
+  },
+  body: { ...AppStylesLight.Layout.hbox },
+  app: { ...AppStylesLight.Layout.vbox, scroll: "none", overflow: "hidden" },
+  page: { ...AppStylesLight.Layout.vbox, flex: 1 },
   pageHidden: { flex: 0, height: 0, visibility: "hidden" },
 }
 
@@ -58,43 +77,44 @@ export default class App extends Component {
     const showNative = ui.tab === "native"
     const showState = ui.tab === "state"
     const showCustomCommands = ui.tab === "customCommands"
+    const currentStyle = appSettingsStore.mode === ModeType.LIGHT ? StylesLightMode : Styles;
 
     return (
       <Provider session={session}>
-        <div style={Styles.container}>
-          <div style={Styles.content}>
+        <div style={currentStyle.container}>
+          <div style={currentStyle.content}>
             {!ui.inTerminal && (
-              <div style={Styles.body}>
+              <div style={currentStyle.body}>
                 <Sidebar />
-                <div style={Styles.app}>
-                  <div style={showHome ? Styles.page : Styles.pageHidden}>
+                <div style={currentStyle.app}>
+                  <div style={showHome ? currentStyle.page : currentStyle.pageHidden}>
                     <Home />
                   </div>
-                  <div style={showTimeline ? Styles.page : Styles.pageHidden}>
+                  <div style={showTimeline ? currentStyle.page : currentStyle.pageHidden}>
                     <Timeline />
                   </div>
-                  <div style={showState ? Styles.page : Styles.pageHidden}>
+                  <div style={showState ? currentStyle.page : currentStyle.pageHidden}>
                     <State />
                   </div>
-                  <div style={showHelp ? Styles.page : Styles.pageHidden}>
+                  <div style={showHelp ? currentStyle.page : currentStyle.pageHidden}>
                     <Help />
                   </div>
-                  <div style={showNative ? Styles.page : Styles.pageHidden}>
+                  <div style={showNative ? currentStyle.page : currentStyle.pageHidden}>
                     <Native />
                   </div>
-                  <div style={showCustomCommands ? Styles.page : Styles.pageHidden}>
+                  <div style={showCustomCommands ? currentStyle.page : currentStyle.pageHidden}>
                     <CustomCommandsList />
                   </div>
-                  <div style={showSettings ? Styles.page : Styles.pageHidden}>
+                  <div style={showSettings ? currentStyle.page : currentStyle.pageHidden}>
                     <h1>Settings</h1>
                   </div>
                 </div>
               </div>
             )}
             {ui.inTerminal && (
-              <div style={Styles.body}>
-                <div style={Styles.app}>
-                  <div style={Styles.page}>
+              <div style={currentStyle.body}>
+                <div style={currentStyle.app}>
+                  <div style={currentStyle.page}>
                     <ReactotronTerminal />
                   </div>
                 </div>

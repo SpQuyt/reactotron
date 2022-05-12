@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import JSONTree from 'react-json-tree'
 import Colors from '../Theme/Colors'
 
-const theme = { ...Colors.theme, base0B: Colors.foreground }
+const theme = { ...Colors.theme }
 
 const Styles = {
   container: {},
@@ -11,9 +11,7 @@ const Styles = {
     tree: { backgroundColor: 'transparent', marginTop: -3 },
     ...theme
   },
-  muted: {
-    color: Colors.highlight
-  }
+  muted: {}
 }
 
 const ObjectTree = props => {
@@ -28,7 +26,28 @@ const ObjectTree = props => {
         invertTheme={Colors.invertTheme}
         getItemString={(type, data, itemType, itemString) => {
           if (type === 'Object') {
-            return <span style={Styles.muted}>{itemType}</span>
+            const childrenKeys = Object.keys(data).map(dataItem => {
+              const suitableType = ['string', 'number'];
+              if (suitableType.includes(typeof data[dataItem])) {
+                return `${dataItem}: ${data[dataItem]}`
+              }
+              if (typeof data[dataItem] === 'array') {
+                return `${dataItem}: ${data[dataItem]}(${data[dataItem]?.length})`
+              }
+              if (typeof data[dataItem] === 'object') {
+                return `${dataItem}: ${typeof data[dataItem]}{}`
+              }
+              return `${dataItem}: ${typeof data[dataItem]}`
+            }).join(', ')
+            return <span style={Styles.muted}>
+              {{
+                ...itemType,
+                props: {
+                  ...itemType.props,
+                  children: `{ ${childrenKeys} }`
+                }
+              }}
+            </span>
           }
           return (
             <span style={Styles.muted}>

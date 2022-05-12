@@ -25,7 +25,6 @@ const Styles = {
   title: {
     textAlign: "center",
     fontSize: "2rem",
-    color: Colors.foregroundLight,
     margin: 0,
     paddingBottom: 50,
     paddingTop: 10,

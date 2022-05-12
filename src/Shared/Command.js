@@ -6,9 +6,12 @@ import {
   MdExpandLess as IconOpen,
   MdExpandMore as IconClosed
 } from "react-icons/md"
+import { ModeType } from "../constants.js"
 import Timestamp from "../Shared/Timestamp"
+import appSettingsStore from "../Stores/AppSettingsStore.js"
 import AppStyles from "../Theme/AppStyles"
 import Colors from "../Theme/Colors"
+import ColorsLight from "../Theme/ColorsLight"
 import CommandToolbar from "./CommandToolbar"
 
 const Styles = {
@@ -53,7 +56,6 @@ const Styles = {
   },
   displayIconSize: 16,
   preview: {
-    color: Colors.highlight,
     textAlign: "left",
     paddingRight: 16,
     overflow: "hidden",
@@ -70,6 +72,77 @@ const Styles = {
   },
   timestamp: {
     color: Colors.foregroundDark,
+    paddingRight: 10,
+  },
+  spacer: {
+    flex: 1,
+  },
+  children: {
+    overflow: "hidden",
+    animation: "fade-up 0.25s",
+    willChange: "transform opacity",
+    padding: "0 40px 30px 40px",
+  },
+}
+
+const StylesLightMode = {
+  container: {
+    ...AppStyles.Layout.hbox,
+    marginTop: 0,
+    alignItems: "flex-start",
+    borderBottom: `1px solid ${ColorsLight.line}`,
+  },
+  containerOpen: {
+    backgroundColor: ColorsLight.backgroundSubtleLight,
+  },
+  icon: {
+    color: ColorsLight.backgroundHighlight,
+  },
+  body: {
+    ...AppStyles.Layout.vbox,
+    marginLeft: 0,
+  },
+  topRow: {
+    ...AppStyles.Layout.hbox,
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    padding: "15px 20px",
+    cursor: "pointer",
+  },
+  title: {
+    textAlign: "left",
+    width: 168,
+  },
+  titleText: {
+    color: ColorsLight.tag,
+  },
+  titleTextInverse: {
+    backgroundColor: ColorsLight.tag,
+    color: ColorsLight.tagComplement,
+    borderRadius: 4,
+    padding: "4px 8px",
+  },
+  displayIcon: {
+    marginRight: 4,
+  },
+  displayIconSize: 16,
+  preview: {
+    textAlign: "left",
+    paddingRight: 16,
+    overflow: "hidden",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    textOverflow: "ellipsis",
+    display: "-webkit-box",
+    flex: 1,
+    wordBreak: "break-all",
+  },
+  duration: {
+    color: ColorsLight.foregroundDark,
+    paddingRight: 10,
+  },
+  timestamp: {
+    color: ColorsLight.foregroundDark,
     paddingRight: 10,
   },
   spacer: {
@@ -119,30 +192,47 @@ class Command extends Component {
     const { important, type } = command
     const isDisplay = type === "display"
     const { date } = command
-    const titleTextStyle = { ...Styles.titleText, ...(important && Styles.titleTextInverse) }
-    const topRowStyle = Styles.topRow
-    const timestampStyle = Styles.timestamp
+    const currentStyle = appSettingsStore.mode === ModeType.LIGHT ? StylesLightMode : Styles;
+    const topRowStyle = currentStyle.topRow
+    const timestampStyle = currentStyle.timestamp
     const Icon = isOpen ? IconOpen : IconClosed
-    const containerStyles = { ...Styles.container, ...(isOpen && Styles.containerOpen) }
+    const containerStyles = { ...currentStyle.container, ...(isOpen && currentStyle.containerOpen) }
+    let tagStyle;
+    switch (title) {
+      case 'API RESPONSE': {
+        tagStyle = { color: Colors.bold };
+        break;
+      }
+      case 'ACTION': {
+        tagStyle = { color: Colors.string };
+        break;
+      }
+      default: {
+        tagStyle = { color: Colors.tag }
+        break;
+      }
+    }
+    const titleTextStyle = { ...currentStyle.titleText, ...(important && currentStyle.titleTextInverse), ...tagStyle }
+
     return (
       <div style={containerStyles}>
-        <div style={Styles.body}>
+        <div style={currentStyle.body}>
           <div style={topRowStyle} onClick={this.handleToggleOpen}>
             <Timestamp date={date} style={timestampStyle} deltaTime={deltaTime} />
-            <div style={Styles.title}>
+            <div style={currentStyle.title}>
               <span style={titleTextStyle}>
                 {isDisplay && (
-                  <DisplayIcon size={Styles.displayIconSize} style={Styles.displayIcon} />
+                  <DisplayIcon size={currentStyle.displayIconSize} style={currentStyle.displayIcon} />
                 )}
                 {title}
               </span>
             </div>
-            {!isOpen && <span style={Styles.preview}>{preview}</span>}
+            {!isOpen && <span style={{ ...currentStyle.preview}}>{preview}</span>}
             {isOpen && <CommandToolbar command={command} />}
-            {isOpen && <span style={Styles.spacer} />}
-            <Icon size={20} style={Styles.icon} />
+            {isOpen && <span style={currentStyle.spacer} />}
+            <Icon size={20} style={currentStyle.icon} />
           </div>
-          {isOpen && <div style={Styles.children}>{children}</div>}
+          {isOpen && <div style={currentStyle.children}>{children}</div>}
         </div>
       </div>
     )
